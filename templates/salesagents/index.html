@@ -1,0 +1,121 @@
+ <!--tell django to load all content from parent template-->
+{% extends "salesagents/base.html" %}
+
+{% block body %}
+<h3 class="m-4">All SalesAgents</h3>
+<div class="row">
+  <div class="col-12">
+    {% if salesAgent %}
+    <div class="card bg-light ms-4 me-4 mb-4">
+      <div class="card-header">
+        <i class="fa-solid fa-list fa-lg"></i> SalesAgents Records
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Agent SerialNo</th>
+                  <th scope="col">First Name</th>
+                  <th scope="col">Surname</th>
+                  <th scope="col">Assigned Area</th>
+                  <th scope="col">Team Leader</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for salesAgent in salesagents %}
+                  <tr>
+                    <td>{{ salesAgent.agent_serialNo }}</td>
+                    <td>{{ salesAgent.first_name }}</td>
+                    <td>{{ salesAgent.surname }}</td>
+                    <td>{{ salesAgent.phone_number }}</td>
+                    <td>{{ salesAgent.assigned_area }}</td>
+                    <td>{{ salesAgent.team_leader }}</td>
+                      <td>{{ salesAgent.status }}</td>
+                    <td>
+                      <button type="button" class="btn btn-success me-1" href="{% url 'view_student' salesAgent.id %}" data-bs-toggle="modal" data-bs-target="#myModal{{salesAgent.id}}">
+                        <i class="fa-solid fa-circle-info fa-lg"></i>
+                      </button>
+
+                      <!-- Modal - View Student -->
+                      <div class="modal" id="myModal{{salesAgent.id}}" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">
+                                Student: {{ salesAgent.first_name }} {{ salesAgent.surname }}
+                              </h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"></span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <ul class="list-unstyled">
+                                <li>Agent SerialNo: <strong>{{ salesAgent.student_number }}</strong></li>
+                                <li>First Name: <strong>{{ salesAgent.first_name }}</strong></li>
+                                <li>Surname: <strong>{{ salesAgent.surname }}</strong></li>
+                                <li>Phone Number: <strong>{{ salesAgent.phone_number }}</strong></li>
+                                <li>Assigned Area: <strong>{{ salesAgent.assigned_area }}</strong></li>
+                                <li>Team Leader: <strong>{{ salesAgent.team_leader }}</strong></li>
+                                  <li>Status: <strong>{{ salesAgent.status }}</strong></li>
+
+                              </ul>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <a class="btn btn-warning me-1" href="{% url 'edit' salesAgent.id %}">
+                        <i class="fa-solid fa-pen-to-square fa-lg"></i>
+                      </a>
+
+                      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{salesAgent.id}}">
+                        <i class="fa-solid fa-trash-can fa-lg"></i>
+                      </button>
+
+                      <!-- Modal - Delete Student -->
+                      <div class="modal" id="delete{{salesAgent.id}}" tabindex="-1" aria-labelledby="myModalLabel2" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">
+                                Student: {{ salesAgent.first_name }} {{ salesAgent.surname }}
+                              </h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"></span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <p>Are you sure you want to delete this salesAgent?</p>
+                            </div>
+                            <div class="modal-footer">
+                              <form action="{% url 'delete' salesAgent.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="submit" class="btn btn-primary" value="Delete">
+                              </form>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    {% else %}
+      <h5 class="alert alert-primary ms-4 me-4">No SalesAgents Records</h5>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
